@@ -1,23 +1,32 @@
-import Link from "next/link"
+import Link from "next/link";
 
 const NOTION_BLOG_ID =
-    process.env.NOTION_BLOG_ID || "d5783b10f6414a068e03259a76a4e0e2"
+    process.env.NOTION_BLOG_ID || "d5783b10f6414a068e03259a76a4e0e2";
 
-export type Post = { id: string; slug: string; title: string; date: string }
+type PostStatus = "Published" | "Draft";
+export type Post = {
+    id: string;
+    slug: string;
+    title: string;
+    date: string;
+    status: PostStatus;
+};
 
 export const getAllPosts = async (): Promise<Post[]> => {
     return await fetch(
         `https://notion-api.splitbee.io/v1/table/${NOTION_BLOG_ID}`
-    ).then((res) => res.json())
-}
+    )
+        .then((res) => res.json())
+        .then((res) => res.filter((row: Post) => row.status === "Published"));
+};
 
 export async function getStaticProps() {
-    const posts = await getAllPosts()
+    const posts = await getAllPosts();
     return {
         props: {
             posts,
         },
-    }
+    };
 }
 
 function HomePage({ posts }: { posts: Post[] }) {
@@ -35,7 +44,7 @@ function HomePage({ posts }: { posts: Post[] }) {
                 ))}
             </div>
         </div>
-    )
+    );
 }
 
-export default HomePage
+export default HomePage;
