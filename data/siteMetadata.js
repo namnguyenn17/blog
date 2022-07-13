@@ -11,7 +11,7 @@ const siteMetadata = {
   github: 'https://github.com/nam-nguyen17',
   twitter: 'https://twitter.com/NamNguyen579',
   linkedin: 'https://www.linkedin.com/in/namnguyen17/',
-  locale: 'vi-VN',
+  locale: 'en-US',
   analytics: {
     plausibleDataDomain: 'namnguyen.blog',
   },
