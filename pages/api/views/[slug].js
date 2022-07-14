@@ -17,6 +17,7 @@ export default async (req, res) => {
       .select('view_count')
       .filter('slug', 'eq', req.query.slug)
 
+    // console.log(data)
     if (data) {
       return res.status(200).json({
         total: data[0]?.view_count || null,

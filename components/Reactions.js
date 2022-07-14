@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react'
+
 import useArticleReactions from '../lib/hooks/useArticleReactions'
+import useSWR from 'swr'
 
 const fetcher = async (input) => {
   const res = await fetch(input)
@@ -28,14 +31,16 @@ const Reactions = ({ slug }) => {
   return (
     <div>
       {hasLiked ? (
-        <button onClick={() => handleDecrementLike()}>Unlike</button>
+        <button onClick={() => handleDecrementLike()}>Un Like</button>
       ) : (
         <button onClick={() => handleIncrementLike()}>Like 👍</button>
       )}
       {reactions?.like_count}
+
       <br />
+
       {hasLoved ? (
-        <button onClick={() => handleDecrementLove()}>Unlove</button>
+        <button onClick={() => handleDecrementLove()}>Un love</button>
       ) : (
         <button onClick={() => handleIncrementLove()}>Love ❤️</button>
       )}
