@@ -4,7 +4,7 @@ export default async (req, res) => {
   if (req.method === 'POST') {
     const body = JSON.parse(req.body)
     // Call our stored procedure with the page_slug set by the request params slug
-    console.table(body)
+    // console.table(body)
     const { reaction, type } = body
     if (reaction === 'like_count') {
       if (type === 'increment') {
@@ -65,7 +65,7 @@ export default async (req, res) => {
       .select('like_count, love_count, clap_count, party_count')
       .filter('slug', 'eq', req.query.slug)
 
-    console.log(data)
+    // console.log(data)
 
     if (data) {
       return res.status(200).json({
