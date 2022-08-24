@@ -1,14 +1,13 @@
-import { Client } from '@notionhq/client'
-
-import Link from 'next/link'
 import { Fragment, useEffect } from 'react'
-import slugify from 'slugify'
 
-import { AnchorLink } from '../../components/AnchorLink'
-import { CodeBlock } from '../../components/CodeBlock'
-import PageViews from '../../components/PageViews'
-import Reactions from '../../components/Reactions'
-import siteMetadata from '../../data/siteMetadata'
+import { AnchorLink } from '@/components/AnchorLink'
+import { Client } from '@notionhq/client'
+import { CodeBlock } from '@/components/Codeblock'
+import Link from 'next/link'
+import PageViews from '@/components/PageViews'
+import Reactions from '@/components/Reactions'
+import siteMetadata from '@/data/siteMetadata'
+import slugify from 'slugify'
 
 const postDateTemplate = {
   weekday: 'long',
@@ -40,7 +39,6 @@ export const Text = ({ text }) => {
     )
   })
 }
-
 const renderBlock = (block) => {
   const { type, id } = block
   const value = block[type]
@@ -163,7 +161,6 @@ const renderBlock = (block) => {
   }
 }
 
-// ArticlePage
 const ArticlePage = ({ content, title, slug, publishedDate, lastEditedAt }) => {
   useEffect(() => {
     fetch(`/api/views/${slug}`, {
@@ -240,8 +237,6 @@ export const getStaticPaths = async () => {
       })
     }
   })
-
-  // console.log(paths);
 
   return {
     paths,

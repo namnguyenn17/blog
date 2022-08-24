@@ -1,10 +1,11 @@
-import { SupabaseAdmin } from '../../../lib/supabase'
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-export default async (req, res) => {
+import { SupabaseAdmin } from '@/lib/supabase'
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     const body = JSON.parse(req.body)
     // Call our stored procedure with the page_slug set by the request params slug
-    // console.table(body)
     const { reaction, type } = body
     if (reaction === 'like_count') {
       if (type === 'increment') {
@@ -64,8 +65,6 @@ export default async (req, res) => {
     const { data } = await SupabaseAdmin.from('reactions')
       .select('like_count, love_count, clap_count, party_count')
       .filter('slug', 'eq', req.query.slug)
-
-    // console.log(data)
 
     if (data) {
       return res.status(200).json({
