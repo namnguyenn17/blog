@@ -13,8 +13,8 @@ const siteMetadata = {
   linkedin: 'https://www.linkedin.com/in/namnguyen17/',
   locale: 'en-US',
   analytics: {
-    plausibleDataDomain: 'namnguyen.blog',
-  },
-}
+    plausibleDataDomain: 'namnguyen.blog'
+  }
+};
 
-module.exports = siteMetadata
+module.exports = siteMetadata;

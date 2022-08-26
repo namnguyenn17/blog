@@ -1,4 +1,4 @@
-import Highlight, { defaultProps } from 'prism-react-renderer'
+import Highlight, { defaultProps } from 'prism-react-renderer';
 
 export const CodeBlock = ({ code }) => {
   return (
@@ -24,5 +24,5 @@ export const CodeBlock = ({ code }) => {
         </pre>
       )}
     </Highlight>
-  )
-}
+  );
+};

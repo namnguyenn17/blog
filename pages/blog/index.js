@@ -1,6 +1,6 @@
-import { ArticleCard } from '@/components/ArticleCard'
-import { Client } from '@notionhq/client'
-import Head from 'next/head'
+import { ArticleCard } from '@/components/ArticleCard';
+import { Client } from '@notionhq/client';
+import Head from 'next/head';
 
 export default function Blog({ articles }) {
   return (
@@ -33,13 +33,13 @@ export default function Blog({ articles }) {
         </a>
       </footer>
     </div>
-  )
+  );
 }
 
 export const getStaticProps = async () => {
   const notion = new Client({
-    auth: process.env.NOTION_SECRET,
-  })
+    auth: process.env.NOTION_SECRET
+  });
 
   const data = await notion.databases.query({
     database_id: process.env.BLOG_DATABASE_ID,
@@ -48,31 +48,31 @@ export const getStaticProps = async () => {
         {
           property: 'Status',
           select: {
-            equals: '✅ Published',
-          },
+            equals: '✅ Published'
+          }
         },
         {
           property: 'Type',
           select: {
-            equals: 'Personal',
-          },
-        },
-      ],
-    },
-  })
+            equals: 'Personal'
+          }
+        }
+      ]
+    }
+  });
 
   const articles = data.results.map((article) => {
     return {
       title: article.properties.Name.title[0].plain_text,
       coverImage:
         article.properties?.coverImage?.files[0]?.file.url ||
-        'https://via.placeholder.com/600x400.png',
-    }
-  })
+        'https://via.placeholder.com/600x400.png'
+    };
+  });
 
   return {
     props: {
-      articles,
-    },
-  }
-}
+      articles
+    }
+  };
+};

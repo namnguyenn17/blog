@@ -1,4 +1,4 @@
-import useArticleReactions from '@/hooks/useArticleReactions'
+import useArticleReactions from '@/hooks/useArticleReactions';
 
 const Reactions = ({ slug }) => {
   const {
@@ -14,8 +14,8 @@ const Reactions = ({ slug }) => {
     handleIncrementClap,
     handleDecrementClap,
     handleIncrementParty,
-    handleDecrementParty,
-  } = useArticleReactions(slug)
+    handleDecrementParty
+  } = useArticleReactions(slug);
 
   return (
     <div>
@@ -53,7 +53,7 @@ const Reactions = ({ slug }) => {
       )}
       {reactions?.party_count}
     </div>
-  )
-}
+  );
+};
 
-export default Reactions
+export default Reactions;

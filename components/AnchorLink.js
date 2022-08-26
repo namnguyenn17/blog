@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import { formatHashLink } from '@/lib/formatHashLink'
+import { formatHashLink } from '@/lib/formatHashLink';
 
 export function AnchorLink({ children, text }) {
-  const [hashLink, setHashLink] = useState()
+  const [hashLink, setHashLink] = useState();
 
   useEffect(() => {
-    setHashLink(formatHashLink(text))
-  }, [])
+    setHashLink(formatHashLink(text));
+  }, [text]);
 
   return (
     <div className="group flex justify-start items-center space-x-2">
@@ -44,5 +44,5 @@ export function AnchorLink({ children, text }) {
         </a>
       </div>
     </div>
-  )
+  );
 }

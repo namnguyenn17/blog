@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Head from 'next/head';
 
 export default function Home({ articles }) {
   return (
@@ -22,5 +22,5 @@ export default function Home({ articles }) {
         </a>
       </footer>
     </div>
-  )
+  );
 }
