@@ -22,6 +22,12 @@
     },
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/blog/[slug].ks"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/blog/[slug].ks",
+    "data/siteMetadata.js"
+  ],
   "exclude": ["node_modules"]
 }

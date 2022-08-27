@@ -1,4 +1,5 @@
 import { Fragment, useEffect } from 'react';
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 import { AnchorLink } from '@/components/AnchorLink';
 import { Client } from '@notionhq/client';
@@ -9,18 +10,11 @@ import Reactions from '@/components/Reactions';
 import siteMetadata from '@/data/siteMetadata';
 import slugify from 'slugify';
 
-const postDateTemplate = {
-  weekday: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-};
-
 export const Text = ({ text }) => {
   if (!text) {
     return null;
   }
-  return text.map((value) => {
+  return text.map((value, index) => {
     const {
       annotations: { bold, code, color, italic, strikethrough, underline },
       text
@@ -28,7 +22,7 @@ export const Text = ({ text }) => {
     return (
       // eslint-disable-next-line react/jsx-key
       <span
-        key={text}
+        key={index}
         className={[
           bold ? 'font-bold' : null,
           italic ? 'italic' : null,
@@ -121,9 +115,7 @@ const renderBlock = (block) => {
     case 'code':
       return (
         <div>
-          <CodeBlock code={value.text[0].text.content}>
-            {/* {JSON.stringify(value.text[0].text.content)} */}
-          </CodeBlock>
+          <CodeBlock code={value.text[0].text.content} />
         </div>
       );
     case 'callout':
@@ -145,7 +137,6 @@ const renderBlock = (block) => {
             src={`https://codepen.io/braydoncoyer/embed/preview/${codePenEmbedKey}?default-tab=result`}
             frameBorder="no"
             loading="lazy"
-            allowtransparency="true"
             allowFullScreen={true}
           >
             See the Pen <a href={value.url}>Postage from Bag End</a> by Braydon
@@ -178,17 +169,21 @@ const ArticlePage = ({ content, title, slug, publishedDate, lastEditedAt }) => {
         <h1>{title}</h1>
         <h4>
           Published{' '}
-          {new Date(publishedDate).toLocaleDateString(
-            siteMetadata.locale,
-            postDateTemplate
-          )}
+          {new Date(publishedDate).toLocaleDateString(siteMetadata.locale, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
         </h4>
         <h4>
           Last edited{' '}
-          {new Date(lastEditedAt).toLocaleDateString(
-            siteMetadata.locale,
-            postDateTemplate
-          )}
+          {new Date(lastEditedAt).toLocaleDateString(siteMetadata.locale, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
         </h4>
         {content.map((block) => (
           <Fragment key={block.id}>{renderBlock(block)}</Fragment>
@@ -201,12 +196,12 @@ const ArticlePage = ({ content, title, slug, publishedDate, lastEditedAt }) => {
   );
 };
 
-export const getStaticPaths = async () => {
+export const getStaticPaths: GetStaticPaths = async () => {
   const notion = new Client({
     auth: process.env.NOTION_SECRET
   });
 
-  const data = await notion.databases.query({
+  const data: any = await notion.databases.query({
     database_id: process.env.BLOG_DATABASE_ID,
     filter: {
       and: [
@@ -246,7 +241,7 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps = async ({ params: { slug } }) => {
+export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
   let content = [];
   let articleTitle = '';
   let publishedDate = null;
@@ -256,7 +251,7 @@ export const getStaticProps = async ({ params: { slug } }) => {
     auth: process.env.NOTION_SECRET
   });
 
-  const data = await notion.databases.query({
+  const data: any = await notion.databases.query({
     database_id: process.env.BLOG_DATABASE_ID,
     filter: {
       and: [
@@ -276,7 +271,7 @@ export const getStaticProps = async ({ params: { slug } }) => {
     }
   });
 
-  const page = data.results.find((result) => {
+  const page: any = data.results.find((result) => {
     if (result.object === 'page') {
       articleTitle = result.properties.Name.title[0].plain_text;
       const resultSlug = slugify(articleTitle).toLowerCase();

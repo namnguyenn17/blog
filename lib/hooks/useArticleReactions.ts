@@ -1,6 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 
+import { Reactions } from '../types';
 import { fetcher } from '../fetcher';
 import useSWR from 'swr';
 
@@ -13,20 +13,24 @@ const initialReactionState = {
   has_read: true // if reader is on the page, set their read status to true
 };
 
-export default function useArticleReactions(slug) {
+export default function useArticleReactions(slug: string) {
   // Flags to indicate if the current user has performed any reactions
   const [hasLiked, setHasLiked] = useState(false);
   const [hasLoved, setHasLoved] = useState(false);
   const [hasClapped, setHasClapped] = useState(false);
   const [hasPartied, setHasPartied] = useState(false);
-  const [reactions, setReactions] = useState({ liked: true });
+  const [reactions, setReactions] = useState<Reactions>();
 
   const [hydrated, setHydrated] = useState(false);
 
   // Reaction count data
-  const { data, mutate } = useSWR(`/api/reactions/${slug}`, fetcher, {
-    refreshInterval: 25000
-  });
+  const { data, mutate } = useSWR<Reactions>(
+    `/api/reactions/${slug}`,
+    fetcher,
+    {
+      refreshInterval: 25000
+    }
+  );
 
   useEffect(() => {
     setHydrated(true);
@@ -61,7 +65,7 @@ export default function useArticleReactions(slug) {
       })
     });
 
-    mutate({ ...data, liked: data.like_count + 1 });
+    mutate({ ...data, like_count: data.like_count + 1 });
   }
 
   async function handleDecrementLike() {
@@ -75,7 +79,7 @@ export default function useArticleReactions(slug) {
       })
     });
 
-    mutate({ ...data, liked: data.like_count - 1 });
+    mutate({ ...data, like_count: data.like_count - 1 });
   }
 
   async function handleIncrementLove() {
@@ -89,7 +93,7 @@ export default function useArticleReactions(slug) {
       })
     });
 
-    mutate({ ...data, loved: data.love_count + 1 });
+    mutate({ ...data, love_count: data.love_count + 1 });
   }
 
   async function handleDecrementLove() {
@@ -103,7 +107,7 @@ export default function useArticleReactions(slug) {
       })
     });
 
-    mutate({ ...data, loved: data.love_count - 1 });
+    mutate({ ...data, love_count: data.love_count - 1 });
   }
 
   async function handleIncrementClap() {
@@ -117,7 +121,7 @@ export default function useArticleReactions(slug) {
       })
     });
 
-    mutate({ ...data, clapped: data.clap_count + 1 });
+    mutate({ ...data, clap_count: data.clap_count + 1 });
   }
 
   async function handleDecrementClap() {
@@ -131,7 +135,7 @@ export default function useArticleReactions(slug) {
       })
     });
 
-    mutate({ ...data, clapped: data.clap_count - 1 });
+    mutate({ ...data, clap_count: data.clap_count - 1 });
   }
 
   async function handleIncrementParty() {
@@ -145,7 +149,7 @@ export default function useArticleReactions(slug) {
       })
     });
 
-    mutate({ ...data, partied: data.party_count + 1 });
+    mutate({ ...data, party_count: data.party_count + 1 });
   }
 
   async function handleDecrementParty() {
@@ -159,7 +163,7 @@ export default function useArticleReactions(slug) {
       })
     });
 
-    mutate({ ...data, partied: data.party_count - 1 });
+    mutate({ ...data, party_count: data.party_count - 1 });
   }
 
   // === HELPER FUNCTIONS ===

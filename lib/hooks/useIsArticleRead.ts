@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export function useIsArticleRead(slug) {
+export function useIsArticleRead(slug: string) {
   const [hasPageHydrated, setHasPageHydrated] = useState(false);
   const [hasRead, setHasRead] = useState(true);
 
