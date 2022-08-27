@@ -31,7 +31,7 @@ export function ArticleCard({ article }) {
           blurDataURL={article.coverImage}
           width={600}
           height={400}
-          alt={article.title}
+          alt={'article cover'}
         />
         <p>
           {article.title} {!hasRead && '- UNREAD'}

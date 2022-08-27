@@ -28,6 +28,7 @@ export const Text = ({ text }) => {
     return (
       // eslint-disable-next-line react/jsx-key
       <span
+        key={text}
         className={[
           bold ? 'font-bold' : null,
           italic ? 'italic' : null,
