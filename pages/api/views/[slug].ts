@@ -1,9 +1,11 @@
-/* eslint-disable import/no-anonymous-default-export */
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { SupabaseAdmin } from '@/lib/supabase';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === 'POST') {
     // Call our stored procedure with the page_slug set by the request params slug
     await SupabaseAdmin.rpc('increment_page_view', {
@@ -19,7 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { data } = await SupabaseAdmin.from('pages')
       .select('view_count')
       .filter('slug', 'eq', req.query.slug);
-
+    // console.log(data);
     if (data) {
       return res.status(200).json({
         total: data[0]?.view_count || null
@@ -30,4 +32,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(400).json({
     message: 'Unsupported Request'
   });
-};
+}

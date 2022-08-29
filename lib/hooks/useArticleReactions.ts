@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 
 import { Reactions } from '../types';
@@ -13,7 +14,7 @@ const initialReactionState = {
   has_read: true // if reader is on the page, set their read status to true
 };
 
-export default function useArticleReactions(slug: string) {
+export default function useArticleReactions(slug) {
   // Flags to indicate if the current user has performed any reactions
   const [hasLiked, setHasLiked] = useState(false);
   const [hasLoved, setHasLoved] = useState(false);
