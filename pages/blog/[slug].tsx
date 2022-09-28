@@ -115,7 +115,10 @@ const renderBlock = (block) => {
     case 'code':
       return (
         <div>
-          <CodeBlock code={value.text[0].text.content} />
+          <CodeBlock
+            language={value.language}
+            code={value.text[0].text.content}
+          />
         </div>
       );
     case 'callout':
@@ -306,7 +309,7 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
       lastEditedAt,
       slug
     },
-    revalidate: 30,
+    revalidate: 30
   };
 };
 
