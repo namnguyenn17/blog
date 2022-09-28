@@ -20,7 +20,6 @@ export const Text = ({ text }) => {
       text
     } = value;
     return (
-      // eslint-disable-next-line react/jsx-key
       <span
         key={index}
         className={[
@@ -106,7 +105,7 @@ const renderBlock = (block) => {
         value.caption.length >= 1 ? value.caption[0].plain_text : '';
       return (
         <figure className="rounded-lg">
-          <img className="rounded-lg" src={src} alt="" />
+          <img className="rounded-lg" src={src} />
           {caption && (
             <figcaption className="text-center">{caption}</figcaption>
           )}
@@ -191,6 +190,7 @@ const ArticlePage = ({ content, title, slug, publishedDate, lastEditedAt }) => {
         {content.map((block) => (
           <Fragment key={block.id}>{renderBlock(block)}</Fragment>
         ))}
+
         <Link href="/blog">
           <a>← Back to the blog</a>
         </Link>
