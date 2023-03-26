@@ -1,9 +1,12 @@
+/* eslint-disable @next/next/link-passhref */
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import { useState, useEffect } from 'react';
 
 import { ArticleCard } from '@/components/ArticleCard';
 import { Client } from '@notionhq/client';
 import Head from 'next/head';
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Blog({ articles, tags }) {
   const [selectedTags, setSelectedTags] = useState<string>('');
@@ -59,15 +62,21 @@ export default function Blog({ articles, tags }) {
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
+        <Link
           className="flex items-center justify-center"
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
         >
           Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
+          <Image
+            src="/vercel.svg"
+            alt="Vercel Logo"
+            className="h-4 ml-2"
+            width={400}
+            height={400}
+          />
+        </Link>
       </footer>
     </div>
   );

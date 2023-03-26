@@ -206,9 +206,7 @@ const ArticlePage = ({
             <ArticleList articles={moreArticles} />
           </ul>
         </div>
-        <Link href="/blog">
-          <a>← Back to the blog</a>
-        </Link>
+        <Link href="/blog">← Back to the blog</Link>
       </article>
     </article>
   );

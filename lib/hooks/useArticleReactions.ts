@@ -14,7 +14,7 @@ const initialReactionState = {
   has_read: true // if reader is on the page, set their read status to true
 };
 
-export default function useArticleReactions(slug) {
+export default function useArticleReactions(slug: string) {
   // Flags to indicate if the current user has performed any reactions
   const [hasLiked, setHasLiked] = useState(false);
   const [hasLoved, setHasLoved] = useState(false);
@@ -49,7 +49,7 @@ export default function useArticleReactions(slug) {
       setHasClapped(clapped);
       setHasPartied(partied);
     }
-  }, [hydrated, setReactionsToLocalStorage]);
+  }, [getReactionsFromLocalStorage, hydrated, setReactionsToLocalStorage]);
 
   useEffect(() => {
     setReactions(data);
