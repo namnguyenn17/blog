@@ -1,5 +1,7 @@
 import { Fragment, useEffect } from 'react';
+import Image from 'next/image';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { FacebookShareButton, LinkedinShareButton } from 'react-share';
 
 import { AnchorLink } from '@/components/AnchorLink';
 import { ArticleList } from '@/components/ArticleList';
@@ -8,9 +10,11 @@ import { CodeBlock } from '@/components/Codeblock';
 import Link from 'next/link';
 import PageViews from '@/components/PageViews';
 import Reactions from '@/components/Reactions';
+import { getArticlePublicUrl } from '@/lib/getArticlePublicUrl';
 import { shuffleArray } from '@/lib/shuffleArray';
 import siteMetadata from '@/data/siteMetadata';
 import slugify from 'slugify';
+import { useCopyUrlToClipboard } from '@/lib/hooks/useCopyToClipboard';
 
 export const Text = ({ text }) => {
   if (!text) {
@@ -107,7 +111,13 @@ const renderBlock = (block) => {
         value.caption.length >= 1 ? value.caption[0].plain_text : '';
       return (
         <figure className="rounded-lg">
-          <img className="rounded-lg" src={src} />
+          <Image
+            className="rounded-lg"
+            src={src}
+            alt={''}
+            width={400}
+            height={400}
+          />
           {caption && (
             <figcaption className="text-center">{caption}</figcaption>
           )}
@@ -166,6 +176,9 @@ const ArticlePage = ({
   lastEditedAt,
   moreArticles
 }) => {
+  const [isCopied, handleCopy] = useCopyUrlToClipboard();
+  const pubilcUrl = getArticlePublicUrl(slug);
+
   useEffect(() => {
     fetch(`/api/views/${slug}`, {
       method: 'POST'
@@ -199,6 +212,12 @@ const ArticlePage = ({
         {content.map((block) => (
           <Fragment key={block.id}>{renderBlock(block)}</Fragment>
         ))}
+        <FacebookShareButton title={title} url={getArticlePublicUrl(slug)}>
+          Share this article on Facebook
+        </FacebookShareButton>
+        <LinkedinShareButton title={title} url={getArticlePublicUrl(slug)}>
+          Share this article on Linkedin
+        </LinkedinShareButton>
 
         <div>
           <h2 className="text-xl text-gray-900">More articles</h2>

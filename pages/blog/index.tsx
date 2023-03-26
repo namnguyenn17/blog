@@ -1,15 +1,12 @@
-/* eslint-disable @next/next/link-passhref */
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ArticleCard } from '@/components/ArticleCard';
 import { Client } from '@notionhq/client';
 import Head from 'next/head';
-import Link from 'next/link';
-import Image from 'next/image';
 
 export default function Blog({ articles, tags }) {
-  const [selectedTags, setSelectedTags] = useState<string>('');
+  const [selectedTag, setSelectedTag] = useState<string>('');
   const [searchValue, setSearchValue] = useState('');
   const [criteria, setCriteria] = useState([]);
 
@@ -23,8 +20,8 @@ export default function Blog({ articles, tags }) {
     });
 
   useEffect(() => {
-    setSearchValue(selectedTags);
-  }, [selectedTags]);
+    setSearchValue(selectedTag);
+  }, [selectedTag]);
 
   return (
     <div className="min-h-screen py-2">
@@ -34,23 +31,26 @@ export default function Blog({ articles, tags }) {
       </Head>
 
       <main>
-        {JSON.stringify(tags)}
         <div>
           <input
             type="text"
-            value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
+            value={searchValue}
             placeholder="Search articles"
           />
         </div>
+        <h2>Tags</h2>
         <ul className="space-y-4 flex space-x-4">
           {tags &&
             tags.map((tag) => (
               <li key={tag}>
-                <button onClick={() => setSelectedTags(tag)}></button>
+                <button onClick={() => setSelectedTag(tag)}>
+                  <span>{tag}</span>
+                </button>
               </li>
             ))}
         </ul>
+        <h2>Articles</h2>
         <ul className="space-y-12">
           {!filteredArticles.length && <p>No articles found.</p>}
           {filteredArticles.map((article) => (
@@ -58,25 +58,26 @@ export default function Blog({ articles, tags }) {
               <ArticleCard article={article} />
             </li>
           ))}
+
+          {/* {articles &&
+            articles.map((article) => (
+              <li key={article.title}>
+                <ArticleCard article={article} />
+              </li>
+            ))} */}
         </ul>
       </main>
 
       <footer className="flex items-center justify-center w-full h-24 border-t">
-        <Link
+        <a
           className="flex items-center justify-center"
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
           target="_blank"
           rel="noopener noreferrer"
         >
           Powered by{' '}
-          <Image
-            src="/vercel.svg"
-            alt="Vercel Logo"
-            className="h-4 ml-2"
-            width={400}
-            height={400}
-          />
-        </Link>
+          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
+        </a>
       </footer>
     </div>
   );
@@ -136,6 +137,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       articles,
       tags
-    }
+    },
+    revalidate: 30
   };
 };

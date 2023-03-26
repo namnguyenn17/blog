@@ -1,5 +1,5 @@
 import { Article } from '@/lib/types';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import slugify from 'slugify';
 import { useIsArticleRead } from '@/hooks/useIsArticleRead';
 import { useRouter } from 'next/dist/client/router';
