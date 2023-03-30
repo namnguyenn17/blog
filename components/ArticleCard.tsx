@@ -1,5 +1,5 @@
 import { Article } from '@/lib/types';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import slugify from 'slugify';
 import { useIsArticleRead } from '@/hooks/useIsArticleRead';
 import { useRouter } from 'next/dist/client/router';
@@ -31,7 +31,7 @@ export function ArticleCard({ article }: Props) {
         <Image
           objectFit="cover"
           src={article.coverImage}
-          layout="fixed"
+          layout="intrinsic"
           placeholder="blur"
           blurDataURL={article.coverImage}
           width={600}

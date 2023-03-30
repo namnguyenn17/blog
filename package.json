@@ -13,6 +13,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mailchimp/mailchimp_marketing": "^3.0.80",
     "@notionhq/client": "^0.4.4",
     "@supabase/supabase-js": "^1.25.0",
     "@tailwindcss/typography": "^0.4.1",

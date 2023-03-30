@@ -1,5 +1,6 @@
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 import { ArticleCard } from '@/components/ArticleCard';
 import { Client } from '@notionhq/client';
@@ -76,7 +77,13 @@ export default function Blog({ articles, tags }) {
           rel="noopener noreferrer"
         >
           Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
+          <Image
+            src="/vercel.svg"
+            alt="Vercel Logo"
+            className="h-4 ml-2"
+            width={400}
+            height={400}
+          />
         </a>
       </footer>
     </div>

@@ -1,3 +1,3 @@
 export function getArticlePublicUrl(slug: string) {
-  return `https://namnguyen.dev/blog/${slug}`;
+  return `https://namnguyen.blog/blog/${slug}`;
 }
