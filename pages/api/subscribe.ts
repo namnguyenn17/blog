@@ -18,14 +18,18 @@ export default async function handler(
         Authorization: `Token ${process.env.MAILCHIMP_API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email_address: email })
+      body: JSON.stringify({
+        email_address: email,
+        double_opt_in: false,
+        status: 'subscribed'
+      })
     }
   );
 
   const data = await result.json();
 
-  if (!result.ok) {
-    return res.status(500).json({ error: data.error.email[0] });
+  if (result.status >= 400) {
+    return res.status(500).json({ error: data.title });
   }
 
   return res.status(201).json({ error: '' });
