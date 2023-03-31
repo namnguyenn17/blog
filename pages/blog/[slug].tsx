@@ -213,18 +213,22 @@ const ArticlePage = ({
         {content.map((block) => (
           <Fragment key={block.id}>{renderBlock(block)}</Fragment>
         ))}
+        <Subscribe />
+
         <FacebookShareButton title={title} url={getArticlePublicUrl(slug)}>
           Share this article on Facebook
         </FacebookShareButton>
         <LinkedinShareButton title={title} url={getArticlePublicUrl(slug)}>
           Share this article on Linkedin
         </LinkedinShareButton>
+        <button onClick={() => handleCopy()}>Copy Article URL</button>
 
         <div>
           <h2 className="text-xl text-gray-900">More articles</h2>
-          {/* <ul>{articles && <ArticleList articles={moreArticles} />}</ul> */}
+          <ul>
+            <ArticleList articles={moreArticles} />
+          </ul>
         </div>
-        <Subscribe />
         <Link href="/blog">← Back to the blog</Link>
       </article>
     </article>
@@ -239,20 +243,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const data: any = await notion.databases.query({
     database_id: process.env.BLOG_DATABASE_ID,
     filter: {
-      and: [
-        {
-          property: 'Status',
-          select: {
-            equals: '✅ Published'
-          }
-        },
-        {
-          property: 'Type',
-          select: {
-            equals: 'Personal'
-          }
-        }
-      ]
+      property: 'Status',
+      select: {
+        equals: '✅ Published'
+      }
     }
   });
 
@@ -289,20 +283,10 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
   const data: any = await notion.databases.query({
     database_id: process.env.BLOG_DATABASE_ID,
     filter: {
-      and: [
-        {
-          property: 'Status',
-          select: {
-            equals: '✅ Published'
-          }
-        },
-        {
-          property: 'Type',
-          select: {
-            equals: 'Personal'
-          }
-        }
-      ]
+      property: 'Status',
+      select: {
+        equals: '✅ Published'
+      }
     }
   });
 
@@ -317,6 +301,41 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
 
   publishedDate = page.properties.Published.date.start;
   lastEditedAt = page.properties.LastEdited.last_edited_time;
+
+  const moreArticlesData: any = await notion.databases.query({
+    database_id: process.env.BLOG_DATABASE_ID,
+    filter: {
+      and: [
+        {
+          property: 'Status',
+          select: {
+            equals: '✅ Published'
+          }
+        },
+        {
+          property: 'Name',
+          text: {
+            does_not_equal: articleTitle
+          }
+        }
+      ]
+    }
+  });
+
+  let moreArticles = moreArticlesData.results.map((article: any) => {
+    return {
+      title: article.properties.Name.title[0].plain_text,
+      coverImage:
+        article.properties?.coverImage?.files[0]?.file?.url ||
+        article.properties.coverImage?.files[0]?.external?.url ||
+        'https://via.placeholder.com/600x400.png',
+      publishedDate: article.properties.Published.date.start,
+      summary: article.properties?.Summary.rich_text[0]?.plain_text
+    };
+  });
+
+  shuffleArray(moreArticles);
+  moreArticles = moreArticles.slice(0, 2);
 
   let blocks = await notion.blocks.children.list({
     block_id: page.id
@@ -339,7 +358,8 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
       title: articleTitle,
       publishedDate,
       lastEditedAt,
-      slug
+      slug,
+      moreArticles
     },
     revalidate: 30
   };
