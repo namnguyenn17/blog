@@ -20,6 +20,7 @@ import siteMetadata from '@/data/siteMetadata';
 import slugify from 'slugify';
 import { useCopyUrlToClipboard } from '@/lib/hooks/useCopyToClipboard';
 import { Subscribe } from '@/components/Subscribe';
+import { YoutubeEmbed } from '@/components/YoutubeEmbed';
 
 export const Text = ({ text }) => {
   if (!text) {
@@ -55,6 +56,7 @@ export const Text = ({ text }) => {
     );
   });
 };
+
 const renderBlock = (block) => {
   const { type, id } = block;
   const value = block[type];
@@ -178,8 +180,29 @@ const renderBlock = (block) => {
           </iframe>
         </div>
       );
+
     case 'table_of_contents':
       return <div>TOC</div>;
+
+    case 'video':
+      const embedId = value.external.url.slice(
+        value.external.url.lastIndexOf('=') + 1
+      );
+      return <YoutubeEmbed embedId={embedId} />;
+
+    case 'quote':
+      return (
+        <div className="flex space-x-4 bg-gray-50 p-3 border-l-2 border-gray-600 rounded-r-lg">
+          <div>
+            <Text text={value.text} />
+          </div>
+        </div>
+      );
+    case 'divider':
+      return (
+        <hr className="my-16 w-full border-none text-center h-10 before:content-['∿∿∿'] before:text-[#D1D5DB] before:text-2xl"></hr>
+      );
+
     default:
       return `❌ Unsupported block (${
         type === 'unsupported' ? 'unsupported by Notion API' : type
