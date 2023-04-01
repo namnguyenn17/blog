@@ -2,6 +2,11 @@ import { Fragment, useEffect } from 'react';
 import Image from 'next/image';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { FacebookShareButton, LinkedinShareButton } from 'react-share';
+import {
+  getArticlePage,
+  getMoreArticlesToSuggest,
+  getPublishedArticles
+} from '@/lib/notion';
 
 import { AnchorLink } from '@/components/AnchorLink';
 import { ArticleList } from '@/components/ArticleList';
@@ -11,7 +16,6 @@ import Link from 'next/link';
 import PageViews from '@/components/PageViews';
 import Reactions from '@/components/Reactions';
 import { getArticlePublicUrl } from '@/lib/getArticlePublicUrl';
-import { shuffleArray } from '@/lib/shuffleArray';
 import siteMetadata from '@/data/siteMetadata';
 import slugify from 'slugify';
 import { useCopyUrlToClipboard } from '@/lib/hooks/useCopyToClipboard';
@@ -32,11 +36,21 @@ export const Text = ({ text }) => {
         className={[
           bold ? 'font-bold' : null,
           italic ? 'italic' : null,
+          code
+            ? 'bg-indigo-50 py-0.5 px-2 text-indigo-500 rounded mx-1 inline-block align-middle tracking-tight text-base'
+            : null,
           strikethrough ? 'line-through' : null,
           underline ? 'underline' : null
         ].join(' ')}
+        style={color !== 'default' ? { color } : {}}
       >
-        {text.link ? <a href={text.link.url}>{text.content}</a> : text.content}
+        {text.link ? (
+          <a className="text-indigo-500" href={text.link.url}>
+            {text.content}
+          </a>
+        ) : (
+          text.content
+        )}
       </span>
     );
   });
@@ -135,11 +149,14 @@ const renderBlock = (block) => {
       );
     case 'callout':
       return (
-        <div className="flex flex-start space-x-4">
+        <div className="flex flex-start space-x-4 bg-gray-50 rounded-lg p-3">
           {value.icon && <span>{value.icon.emoji}</span>}
-          <Text text={value.text} />
+          <div>
+            <Text text={value.text} />
+          </div>
         </div>
       );
+
     case 'embed':
       const codePenEmbedKey = value.url.slice(value.url.lastIndexOf('/') + 1);
       return (
@@ -149,14 +166,15 @@ const renderBlock = (block) => {
             className="w-full"
             scrolling="no"
             title="Postage from Bag End"
-            src={`https://codepen.io/braydoncoyer/embed/preview/${codePenEmbedKey}?default-tab=result`}
+            src={`https://codepen.io/namnguyen-17/embed/preview/${codePenEmbedKey}?default-tab=result`}
             frameBorder="no"
             loading="lazy"
             allowFullScreen={true}
           >
-            See the Pen <a href={value.url}>Postage from Bag End</a> by Braydon
-            Coyer (<a href="https://codepen.io/braydoncoyer">@braydoncoyer</a>)
-            on <a href="https://codepen.io">CodePen</a>.
+            See the Pen <a href={value.url}>Postage from Bag End</a> by Nam
+            Nguyen (
+            <a href="https://codepen.io/namnguyennn17">@namnguyennn17</a>) on{' '}
+            <a href="https://codepen.io">CodePen</a>.
           </iframe>
         </div>
       );
@@ -172,6 +190,7 @@ const renderBlock = (block) => {
 const ArticlePage = ({
   content,
   title,
+  coverImage,
   slug,
   publishedDate,
   lastEditedAt,
@@ -192,6 +211,14 @@ const ArticlePage = ({
       <Reactions slug={slug} />
       <article className="prose-lg">
         <h1>{title}</h1>
+        <Image
+          objectFit="contain"
+          src={coverImage}
+          width={1080}
+          height={810}
+          alt={'article cover'}
+          priority
+        />
         <h4>
           Published{' '}
           {new Date(publishedDate).toLocaleDateString(siteMetadata.locale, {
@@ -210,15 +237,16 @@ const ArticlePage = ({
             day: 'numeric'
           })}
         </h4>
+
         {content.map((block) => (
           <Fragment key={block.id}>{renderBlock(block)}</Fragment>
         ))}
         <Subscribe />
 
-        <FacebookShareButton title={title} url={getArticlePublicUrl(slug)}>
+        <FacebookShareButton title={title} url={pubilcUrl}>
           Share this article on Facebook
         </FacebookShareButton>
-        <LinkedinShareButton title={title} url={getArticlePublicUrl(slug)}>
+        <LinkedinShareButton title={title} url={pubilcUrl}>
           Share this article on Linkedin
         </LinkedinShareButton>
         <button onClick={() => handleCopy()}>Copy Article URL</button>
@@ -236,23 +264,10 @@ const ArticlePage = ({
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const notion = new Client({
-    auth: process.env.NOTION_SECRET
-  });
-
-  const data: any = await notion.databases.query({
-    database_id: process.env.BLOG_DATABASE_ID,
-    filter: {
-      property: 'Status',
-      select: {
-        equals: '✅ Published'
-      }
-    }
-  });
-
   const paths = [];
+  const data: any = await getPublishedArticles(process.env.BLOG_DATABASE_ID);
 
-  data.results.forEach((result) => {
+  data.forEach((result) => {
     if (result.object === 'page') {
       paths.push({
         params: {
@@ -275,67 +290,28 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
   let articleTitle = '';
   let publishedDate = null;
   let lastEditedAt = null;
+  let coverImage = null;
 
   const notion = new Client({
     auth: process.env.NOTION_SECRET
   });
 
-  const data: any = await notion.databases.query({
-    database_id: process.env.BLOG_DATABASE_ID,
-    filter: {
-      property: 'Status',
-      select: {
-        equals: '✅ Published'
-      }
-    }
-  });
+  const data: any = await getPublishedArticles(process.env.BLOG_DATABASE_ID);
 
-  const page: any = data.results.find((result) => {
-    if (result.object === 'page') {
-      articleTitle = result.properties.Name.title[0].plain_text;
-      const resultSlug = slugify(articleTitle).toLowerCase();
-      return resultSlug === slug;
-    }
-    return false;
-  });
+  const page: any = getArticlePage(data, slug);
 
+  articleTitle = page.properties.Name.title[0].plain_text;
   publishedDate = page.properties.Published.date.start;
   lastEditedAt = page.properties.LastEdited.last_edited_time;
+  coverImage =
+    page.properties?.coverImage?.files[0]?.file?.url ||
+    page.properties.coverImage?.files[0]?.external?.url ||
+    'https://via.placeholder.com/600x400.png';
 
-  const moreArticlesData: any = await notion.databases.query({
-    database_id: process.env.BLOG_DATABASE_ID,
-    filter: {
-      and: [
-        {
-          property: 'Status',
-          select: {
-            equals: '✅ Published'
-          }
-        },
-        {
-          property: 'Name',
-          text: {
-            does_not_equal: articleTitle
-          }
-        }
-      ]
-    }
-  });
-
-  let moreArticles = moreArticlesData.results.map((article: any) => {
-    return {
-      title: article.properties.Name.title[0].plain_text,
-      coverImage:
-        article.properties?.coverImage?.files[0]?.file?.url ||
-        article.properties.coverImage?.files[0]?.external?.url ||
-        'https://via.placeholder.com/600x400.png',
-      publishedDate: article.properties.Published.date.start,
-      summary: article.properties?.Summary.rich_text[0]?.plain_text
-    };
-  });
-
-  shuffleArray(moreArticles);
-  moreArticles = moreArticles.slice(0, 2);
+  const moreArticles: any = await getMoreArticlesToSuggest(
+    process.env.BLOG_DATABASE_ID,
+    articleTitle
+  );
 
   let blocks = await notion.blocks.children.list({
     block_id: page.id
@@ -359,7 +335,8 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
       publishedDate,
       lastEditedAt,
       slug,
-      moreArticles
+      moreArticles,
+      coverImage
     },
     revalidate: 30
   };
