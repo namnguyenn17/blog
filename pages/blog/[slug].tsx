@@ -1,26 +1,27 @@
-import { Fragment, useEffect } from 'react';
-import Image from 'next/image';
-import { GetStaticPaths, GetStaticProps } from 'next';
-import { FacebookShareButton, LinkedinShareButton } from 'react-share';
+import { AnchorLink } from '@/components/AnchorLink';
+import { ArticleList } from '@/components/ArticleList';
+import { Callout } from '@/components/Callout';
+import { CodeBlock } from '@/components/Codeblock';
+import PageViews from '@/components/PageViews';
+import Reactions from '@/components/Reactions';
+import { Subscribe } from '@/components/Subscribe';
+import { YoutubeEmbed } from '@/components/YoutubeEmbed';
+import siteMetadata from '@/data/siteMetadata';
+import { getArticlePublicUrl } from '@/lib/getArticlePublicUrl';
+import { useCopyUrlToClipboard } from '@/lib/hooks/useCopyToClipboard';
 import {
   getArticlePage,
   getMoreArticlesToSuggest,
   getPublishedArticles
 } from '@/lib/notion';
-
-import { AnchorLink } from '@/components/AnchorLink';
-import { ArticleList } from '@/components/ArticleList';
 import { Client } from '@notionhq/client';
-import { CodeBlock } from '@/components/Codeblock';
+import { Container } from 'layouts/Container';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
-import PageViews from '@/components/PageViews';
-import Reactions from '@/components/Reactions';
-import { getArticlePublicUrl } from '@/lib/getArticlePublicUrl';
-import siteMetadata from '@/data/siteMetadata';
+import { Fragment, useEffect } from 'react';
+import { FacebookShareButton, LinkedinShareButton } from 'react-share';
 import slugify from 'slugify';
-import { useCopyUrlToClipboard } from '@/lib/hooks/useCopyToClipboard';
-import { Subscribe } from '@/components/Subscribe';
-import { YoutubeEmbed } from '@/components/YoutubeEmbed';
 
 export const Text = ({ text }) => {
   if (!text) {
@@ -38,20 +39,14 @@ export const Text = ({ text }) => {
           bold ? 'font-bold' : null,
           italic ? 'italic' : null,
           code
-            ? 'bg-indigo-50 py-0.5 px-2 text-indigo-500 rounded mx-1 inline-block align-middle tracking-tight text-base'
+            ? 'bg-indigo-50 dark:bg-indigo-900 dark:bg-opacity-50 text-indigo-500 dark:text-indigo-200 py-0.5 px-2 rounded mx-1 inline-block align-middle tracking-tight text-base'
             : null,
           strikethrough ? 'line-through' : null,
           underline ? 'underline' : null
         ].join(' ')}
         style={color !== 'default' ? { color } : {}}
       >
-        {text.link ? (
-          <a className="text-indigo-500" href={text.link.url}>
-            {text.content}
-          </a>
-        ) : (
-          text.content
-        )}
+        {text.link ? <a href={text.link.url}>{text.content}</a> : text.content}
       </span>
     );
   });
@@ -129,11 +124,15 @@ const renderBlock = (block) => {
       return (
         <figure className="rounded-lg">
           <Image
-            className="rounded-lg"
+            objectFit="contain"
+            width={1080}
+            height={810}
+            alt={
+              caption
+                ? caption
+                : 'A visual depiction of what is being written about'
+            }
             src={src}
-            alt={''}
-            width={400}
-            height={400}
           />
           {caption && (
             <figcaption className="text-center">{caption}</figcaption>
@@ -151,12 +150,12 @@ const renderBlock = (block) => {
       );
     case 'callout':
       return (
-        <div className="flex flex-start space-x-4 bg-gray-50 rounded-lg p-3">
+        <Callout>
           {value.icon && <span>{value.icon.emoji}</span>}
           <div>
             <Text text={value.text} />
           </div>
-        </div>
+        </Callout>
       );
 
     case 'embed':
@@ -222,6 +221,24 @@ const ArticlePage = ({
   const [isCopied, handleCopy] = useCopyUrlToClipboard();
   const pubilcUrl = getArticlePublicUrl(slug);
 
+  const publishedOn = new Date(publishedDate).toLocaleDateString(
+    siteMetadata.locale,
+    {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }
+  );
+
+  const modifiedDate = new Date(lastEditedAt).toLocaleDateString(
+    siteMetadata.locale,
+    {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }
+  );
+
   useEffect(() => {
     fetch(`/api/views/${slug}`, {
       method: 'POST'
@@ -229,11 +246,22 @@ const ArticlePage = ({
   }, [slug]);
 
   return (
-    <article className="max-w-7xl mx-auto">
-      <PageViews slug={slug} />
-      <Reactions slug={slug} />
-      <article className="prose-lg">
-        <h1>{title}</h1>
+    <Container>
+      <div>
+        <h1 className="text-3xl md:text-5xl text-center">{title}</h1>
+        <div className="text-center">
+          <div className="flex justify-center items-center space-x-2 text-lg mb-2">
+            <p className="m-0">{publishedOn}</p>
+            <p className="m-0">•</p>
+            <PageViews slug={slug} />
+          </div>
+          {publishedOn !== modifiedDate && (
+            <p className="text-sm mt-0 text-gray-400 dark:text-gray-600">
+              (Updated on {modifiedDate})
+            </p>
+          )}
+        </div>
+
         <Image
           objectFit="contain"
           src={coverImage}
@@ -242,28 +270,11 @@ const ArticlePage = ({
           alt={'article cover'}
           priority
         />
-        <h4>
-          Published{' '}
-          {new Date(publishedDate).toLocaleDateString(siteMetadata.locale, {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </h4>
-        <h4>
-          Last edited{' '}
-          {new Date(lastEditedAt).toLocaleDateString(siteMetadata.locale, {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          })}
-        </h4>
 
         {content.map((block) => (
           <Fragment key={block.id}>{renderBlock(block)}</Fragment>
         ))}
+        <Reactions slug={slug} />
         <Subscribe />
 
         <FacebookShareButton title={title} url={pubilcUrl}>
@@ -281,8 +292,8 @@ const ArticlePage = ({
           </ul>
         </div>
         <Link href="/blog">← Back to the blog</Link>
-      </article>
-    </article>
+      </div>
+    </Container>
   );
 };
 

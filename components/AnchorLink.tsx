@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 
 import { formatHashLink } from '@/lib/formatHashLink';
-import Link from 'next/link';
 
 type Props = {
   children: JSX.Element;
@@ -20,7 +19,11 @@ export function AnchorLink({ children, text }: Props) {
     <div className="group flex justify-start items-center space-x-2">
       {children}
       <div className="opacity-10 group-hover:opacity-50">
-        <Link id={hashLink} href={`#${hashLink}`}>
+        <a
+          className="text-gray-600 dark:text-gray-400"
+          id={hashLink}
+          href={`#${hashLink}`}
+        >
           <svg
             className="w-7 h-7 hidden md:block"
             fill="none"
@@ -48,7 +51,7 @@ export function AnchorLink({ children, text }: Props) {
               d="M14.25 9.75L9.75 14.25"
             ></path>
           </svg>
-        </Link>
+        </a>
       </div>
     </div>
   );

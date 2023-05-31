@@ -1,17 +1,16 @@
 import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next';
 import { convertToArticleList, getPublishedArticles } from '@/lib/notion';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 import { ArticleCard } from '@/components/ArticleCard';
 import { ArticleList } from '@/components/ArticleList';
 import { Client } from '@notionhq/client';
 import Head from 'next/head';
+import { Container } from 'layouts/Container';
 
 export default function Blog({ articles, tags }) {
   const [selectedTag, setSelectedTag] = useState<string>('');
   const [searchValue, setSearchValue] = useState('');
-  const [criteria, setCriteria] = useState([]);
 
   const filteredArticles = articles
     .sort((a, b) => Number(new Date(b.publishedDate)))
@@ -27,62 +26,33 @@ export default function Blog({ articles, tags }) {
   }, [selectedTag]);
 
   return (
-    <div className="min-h-screen py-2">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <div>
-          <input
-            type="text"
-            onChange={(e) => setSearchValue(e.target.value)}
-            value={searchValue}
-            placeholder="Search articles"
-          />
-        </div>
-        <h2>Tags</h2>
-        <ul className="space-y-4 flex space-x-4">
-          {tags &&
-            tags.map((tag) => (
-              <li key={tag}>
-                <button onClick={() => setSelectedTag(tag)}>
-                  <span>{tag}</span>
-                </button>
-              </li>
-            ))}
-        </ul>
-        <h2>Articles</h2>
-        <ul className="space-y-12">
-          {!filteredArticles.length && <p>No articles found.</p>}
-          <ArticleList articles={filteredArticles} />
-        </ul>
-      </main>
-
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image
-            src="/vercel.svg"
-            alt="Vercel Logo"
-            className="h-4 ml-2"
-            width={400}
-            height={400}
-          />
-        </a>
-      </footer>
-    </div>
+    <Container>
+      <div>
+        <input
+          type="text"
+          onChange={(e) => setSearchValue(e.target.value)}
+          value={searchValue}
+          placeholder="Search articles"
+        />
+      </div>
+      <h2>Tags</h2>
+      <ul className="space-y-4 flex items-center justify-start flex-wrap space-x-4 list-none !important">
+        {tags &&
+          tags.map((tag) => (
+            <button key={tag} onClick={() => setSelectedTag(tag)}>
+              {tag}
+            </button>
+          ))}
+      </ul>
+      <h2>Articles</h2>
+      {!filteredArticles.length && <p>No articles found.</p>}
+      <ArticleList articles={filteredArticles} />
+    </Container>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const data: any = await getPublishedArticles(process.env.BLOG_DATABASE_ID);
+  const data = await getPublishedArticles(process.env.BLOG_DATABASE_ID);
   const { articles, tags } = convertToArticleList(data);
 
   return {
