@@ -36,7 +36,7 @@ export default function Blog({ articles, tags }) {
         />
       </div>
       <h2>Tags</h2>
-      <ul className="space-y-4 flex items-center justify-start flex-wrap space-x-4 list-none !important">
+      <ul className="flex items-center justify-start flex-wrap space-x-4 list-none !important">
         {tags &&
           tags.map((tag) => (
             <button key={tag} onClick={() => setSelectedTag(tag)}>

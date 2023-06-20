@@ -246,7 +246,7 @@ const ArticlePage = ({
   }, [slug]);
 
   return (
-    <Container>
+    <Container articlePage={true}>
       <div>
         <h1 className="text-3xl md:text-5xl text-center">{title}</h1>
         <div className="text-center">
