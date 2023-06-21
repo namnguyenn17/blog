@@ -13,7 +13,7 @@ const links = [
     name: 'Home',
     description:
       'Get a better understanding of where your traffic is coming from.',
-    href: '/',
+    href: '#',
     icon: () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +34,7 @@ const links = [
   {
     name: 'About',
     description: 'Speak directly to your customers in a more meaningful way.',
-    href: '/about',
+    href: '#',
     icon: () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +55,7 @@ const links = [
   {
     name: 'Projects',
     description: "Your customers' data will be safe and secure.",
-    href: '/projects',
+    href: '#',
     icon: () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +76,7 @@ const links = [
   {
     name: 'Blog',
     description: "Connect with third-party tools that you're already using.",
-    href: '/blog',
+    href: '#',
     icon: () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +98,7 @@ const links = [
     name: 'Activity',
     description:
       'Build strategic funnels that will drive your customers to convert',
-    href: '/activity',
+    href: '#',
     icon: () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +129,7 @@ function NavItem({ href, text }) {
           isActive
             ? 'font-bold text-gray-900 dark:text-gray-200'
             : 'font-normal text-gray-600 dark:text-gray-400'
-        } 'hidden md:inline-block p-1 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-midnight transition-all`}
+        } 'hidden md:inline-block p-1 sm:px-6 sm:py-2 rounded-full hover:bg-gray-100 dark:hover:bg-midnight transition-all`}
       >
         <span
           className={`${
@@ -184,7 +184,7 @@ export function NavMenu({}) {
             </svg>
           </Popover.Button>
         </div>
-        <nav className="hidden md:flex space-x-10 text-lg">
+        <nav className="hidden md:flex space-x-6 text-lg">
           <NavItem href="/" text="Home" />
           <NavItem href="/about" text="About" />
           <NavItem href="/projects" text="Projects" />
