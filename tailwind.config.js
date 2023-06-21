@@ -19,6 +19,7 @@ module.exports = {
         teal: colors.teal,
         dark: '#111827',
         midnight: '#1e293b',
+        'midnight-hover': '#334155',
         emerald: colors.emerald,
         fuchsia: colors.fuchsia,
         amber: colors.amber,
@@ -117,5 +118,5 @@ module.exports = {
   variants: {
     typography: ['dark']
   },
-  plugins: [require('@tailwindcss/typography')]
+  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')]
 };
