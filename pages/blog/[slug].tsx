@@ -8,7 +8,7 @@ import { Subscribe } from '@/components/Subscribe';
 import { YoutubeEmbed } from '@/components/YoutubeEmbed';
 import siteMetadata from '@/data/siteMetadata';
 import { getArticlePublicUrl } from '@/lib/getArticlePublicUrl';
-import { useCopyUrlToClipboard } from '@/lib/hooks/useCopyToClipboard';
+import { useCopyToClipboard } from '@/lib/hooks/useCopyToClipboard';
 import {
   getArticlePage,
   getMoreArticlesToSuggest,
@@ -219,7 +219,7 @@ const ArticlePage = ({
   lastEditedAt,
   moreArticles
 }) => {
-  const [isCopied, handleCopy] = useCopyUrlToClipboard();
+  const [isCopied, handleCopy] = useCopyToClipboard();
   const pubilcUrl = getArticlePublicUrl(slug);
 
   const publishedOn = new Date(publishedDate).toLocaleDateString(
