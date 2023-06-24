@@ -248,19 +248,21 @@ const ArticlePage = ({
 
   return (
     <Container articlePage={true}>
-      <div>
-        <h1 className="text-3xl md:text-5xl text-center">{title}</h1>
-        <div className="text-center">
-          <div className="flex justify-center items-center space-x-2 text-lg mb-2">
-            <p className="m-0 text-lg md:text-xl">{publishedOn}</p>
-            <p className="m-0">•</p>
-            <PageViews slug={slug} />
+      <div className="space-y-12">
+        <div>
+          <h1 className="text-3xl md:text-5xl text-center">{title}</h1>
+          <div className="text-center">
+            <div className="flex justify-center items-center space-x-2 text-lg mb-2">
+              <p className="m-0 text-lg md:text-xl">{publishedOn}</p>
+              <p className="m-0">•</p>
+              <PageViews slug={slug} />
+            </div>
+            {publishedOn !== modifiedDate && (
+              <p className="text-sm md:text-base mt-0 text-gray-400 dark:text-gray-600">
+                (Updated on {modifiedDate})
+              </p>
+            )}
           </div>
-          {publishedOn !== modifiedDate && (
-            <p className="text-sm md:text-base mt-0 text-gray-400 dark:text-gray-600">
-              (Updated on {modifiedDate})
-            </p>
-          )}
         </div>
 
         <div className="my-12">
@@ -281,22 +283,27 @@ const ArticlePage = ({
         <Reactions slug={slug} />
         <Subscribe />
 
-        <FacebookShareButton title={title} url={pubilcUrl}>
-          Share this article on Facebook
-        </FacebookShareButton>
-        <LinkedinShareButton title={title} url={pubilcUrl}>
-          Share this article on Linkedin
-        </LinkedinShareButton>
-        <button onClick={() => handleCopy()}>Copy Article URL</button>
-
         <div>
-          <h2 className="text-xl text-gray-900">More articles</h2>
+          <hr />
+          <h3>More articles</h3>
+          <p className="mb-12">
+            If you enjoyed this article, you'll find these insightful too!
+          </p>
           <ul>
             <ArticleList articles={moreArticles} />
           </ul>
         </div>
-        <Link href="/blog">← Back to the blog</Link>
       </div>
+
+      <FacebookShareButton title={title} url={pubilcUrl}>
+        Share this article on Facebook
+      </FacebookShareButton>
+      <LinkedinShareButton title={title} url={pubilcUrl}>
+        Share this article on Linkedin
+      </LinkedinShareButton>
+      <button onClick={() => handleCopy()}>Copy Article URL</button>
+
+      <Link href="/blog">← Back to the blog</Link>
     </Container>
   );
 };
