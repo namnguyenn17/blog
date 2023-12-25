@@ -26,39 +26,6 @@ export default function Home() {
         </code>
         ?
       </p>
-      <h1>Heading 1</h1>
-      <h2>Heading 2</h2>
-      <h3>Heading 3</h3>
-      <h4>Heading 4</h4>
-      <img
-        className="full-bleed"
-        src="https://dwgyu36up6iuz.cloudfront.net/heru80fdn/image/upload/c_fill,d_placeholder_cntraveler.png,fl_progressive,g_face,h_450,q_80,w_800/v1467328944/cntraveler_visiting-the-shire-by-drone.jpg"
-        alt="The Shire"
-      />
-      <ul>
-        <li>Bullet list 1</li>
-        <li>Bullet list 2</li>
-        <li>Bullet list 3</li>
-      </ul>
-      <ol>
-        <li>Numbered list 1</li>
-        <li>Numbered list 2</li>
-        <li>Numbered list 3</li>
-      </ol>
-      <input type="checkbox" />
-      <blockquote>Testing a quote here!</blockquote>
-      <hr />
-      <footer className="flex items-center justify-center w-full h-16 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
-      </footer>
     </Container>
   );
 }

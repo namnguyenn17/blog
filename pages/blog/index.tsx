@@ -40,9 +40,7 @@ export default function Blog({ articles, tags }) {
         <ul className="flex items-center justify-start flex-wrap space-x-4 list-none !important">
           {tags &&
             tags.map((tag) => (
-              <button key={tag} onClick={() => setSelectedTag(tag)}>
-                {tag}
-              </button>
+              <Tag key={tag} tag={tag} cb={() => setSelectedTag(tag)} />
             ))}
         </ul>
         <h2>Articles</h2>
