@@ -83,8 +83,8 @@ export function Subscribe() {
       </p>
       <p>No spam - unsubscribe at any time!</p>
 
-      <form 
-        className="my-4 space-y-4 md:space-y-0 md:flex" 
+      <form
+        className="my-4 space-y-4 md:space-y-0 md:flex"
         onSubmit={subscribe}
       >
         <input

@@ -7,6 +7,7 @@ import Reactions from '@/components/Reactions';
 import { Subscribe } from '@/components/Subscribe';
 import { YoutubeEmbed } from '@/components/YoutubeEmbed';
 import siteMetadata from '@/data/siteMetadata';
+import generateSocialImage from '@/lib/generateSocialImage';
 import { getArticlePublicUrl } from '@/lib/getArticlePublicUrl';
 import { useCopyToClipboard } from '@/lib/hooks/useCopyToClipboard';
 import {
@@ -14,6 +15,7 @@ import {
   getMoreArticlesToSuggest,
   getPublishedArticles
 } from '@/lib/notion';
+import { PageType } from '@/lib/types';
 import { Client } from '@notionhq/client';
 import { Container } from 'layouts/Container';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -217,11 +219,13 @@ const ArticlePage = ({
   slug,
   publishedDate,
   lastEditedAt,
+  summary,
   moreArticles
 }) => {
   const [isCopied, handleCopy] = useCopyToClipboard();
   const pubilcUrl = getArticlePublicUrl(slug);
 
+  console.log('coverImage', coverImage);
   const publishedOn = new Date(publishedDate).toLocaleDateString(
     siteMetadata.locale,
     {
@@ -240,6 +244,15 @@ const ArticlePage = ({
     }
   );
 
+  const socialImageConf = generateSocialImage({
+    title,
+    underlayImage: coverImage.slice(coverImage.lastIndexOf('/') + 1),
+    cloudName: 'namnguyen',
+    imagePublicID: 'og_social_large.png'
+  });
+
+  console.log(socialImageConf);
+
   useEffect(() => {
     fetch(`/api/views/${slug}`, {
       method: 'POST'
@@ -247,7 +260,13 @@ const ArticlePage = ({
   }, [slug]);
 
   return (
-    <Container articlePage={true}>
+    <Container
+      title={`${title} - Nam Nguyen`}
+      description={summary}
+      imageUrl={socialImageConf}
+      date={new Date(publishedDate).toISOString()}
+      type={PageType.ARTICLE}
+    >
       <div className="space-y-12">
         <div>
           <h1 className="text-3xl md:text-5xl text-center">{title}</h1>
@@ -336,6 +355,7 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
   let publishedDate = null;
   let lastEditedAt = null;
   let coverImage = null;
+  let summary = null;
 
   const notion = new Client({
     auth: process.env.NOTION_SECRET
@@ -348,6 +368,7 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
   articleTitle = page.properties.Name.title[0].plain_text;
   publishedDate = page.properties.Published.date.start;
   lastEditedAt = page.properties.LastEdited.last_edited_time;
+  summary = page.properties.Summary.rich_text[0].plain_text;
   coverImage =
     page.properties?.coverImage?.files[0]?.file?.url ||
     page.properties.coverImage?.files[0]?.external?.url ||
@@ -381,6 +402,7 @@ export const getStaticProps: GetStaticProps = async ({ params: { slug } }) => {
       lastEditedAt,
       slug,
       moreArticles,
+      summary,
       coverImage
     },
     revalidate: 30
