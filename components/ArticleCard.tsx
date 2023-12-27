@@ -3,6 +3,7 @@ import Image from 'next/image';
 import slugify from 'slugify';
 import { useIsArticleRead } from '@/hooks/useIsArticleRead';
 import { useRouter } from 'next/dist/client/router';
+import { handleArticleClicked } from '@/lib/handleArticleClick';
 
 type Props = {
   article: Article;
@@ -14,21 +15,9 @@ export function ArticleCard({ article }: Props) {
 
   const [hasRead] = useIsArticleRead(slug);
 
-  function handleArticleClicked() {
-    const localData = JSON.parse(localStorage.getItem(slug));
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(
-        slug,
-        JSON.stringify({ ...localData, has_read: true })
-      );
-    }
-
-    router.push(`/blog/${slug}`);
-  }
-
   return (
     <div>
-      <button onClick={handleArticleClicked}>
+      <button onClick={() => handleArticleClicked(slug)}>
         <Image
           className="rounded-xl"
           objectFit="fill"

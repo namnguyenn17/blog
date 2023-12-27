@@ -8,7 +8,8 @@ module.exports = {
       'dwgyu36up6iuz.cloudfront.net',
       'cdn.hashnode.com',
       'res.craft.do',
-      'prod-files-secure.s3.us-west-2.amazonaws.com' // Add this line for the new hostname
+      'prod-files-secure.s3.us-west-2.amazonaws.com', // Add this line for the new hostname
+      'res.cloudinary.com'
     ]
   }
 };

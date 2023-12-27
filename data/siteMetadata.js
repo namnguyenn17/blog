@@ -7,6 +7,8 @@ const siteMetadata = {
   language: 'en-us',
   siteUrl: 'http://namnguyen.blog',
   siteRepo: 'https://github.com/nam-nguyen17/blog',
+  avatarImage:
+    'https://res.cloudinary.com/namnguyenn/image/upload/v1703648423/Blog/avt.jpg',
   socialBanner: '/static/images/twitter-card.png',
   email: 'mailto:ducnam1719@gmail.com',
   github: 'https://github.com/nam-nguyen17',
